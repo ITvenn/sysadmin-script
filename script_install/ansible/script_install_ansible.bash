@@ -16,13 +16,13 @@ echo "==> Étape 1 : Mise à jour du système"
 apt update && apt upgrade -y
 
 echo "==> Étape 2 : Installation des prérequis"
-apt install -y software-properties-common gnupg
+apt install -y software-properties-common gnupg curl
 
-echo "==> Ajout du dépôt officiel d’Ansible"
-echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" > /etc/apt/sources.list.d/ansible.list
+echo "==> Ajout du dépôt officiel d’Ansible avec clé sécurisée"
 
-echo "==> Importation de la clé GPG du dépôt"
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
+curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x93C4A3FD7BB9C367" | gpg --dearmor > /usr/share/keyrings/ansible-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/ansible-archive-keyring.gpg] http://ppa.launchpad.net/ansible/ansible/ubuntu focal main" > /etc/apt/sources.list.d/ansible.list
 
 echo "==> Mise à jour de la liste des paquets et installation d’Ansible"
 apt update && apt install -y ansible
